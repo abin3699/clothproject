@@ -1,5 +1,5 @@
 from django import forms
-from yousta.models import User,Category
+from yousta.models import User,Category,Cloths
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -17,4 +17,11 @@ class CategoryCreateForm(forms.ModelForm):
     class Meta:
         model=Category
         fields=["name"]
+
+
+class ClothAddForm(forms.ModelForm):
+    class Meta:
+        model= Cloths
+        fields="__all__"
+
 
