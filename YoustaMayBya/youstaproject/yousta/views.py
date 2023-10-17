@@ -7,8 +7,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 
-from yousta.models import User,Category,Cloths,ClothVarients
-from yousta.forms import RegistrationForm,LoginForm,CategoryCreateForm,ClothAddForm,ClothVarientForm
+from yousta.models import User,Category,Cloths,ClothVarients,Offers
+from yousta.forms import RegistrationForm,LoginForm,CategoryCreateForm,ClothAddForm,ClothVarientForm,ClothOfferForm
 
 # Create your views here.
 
@@ -131,3 +131,40 @@ class ClothDetailView(DetailView):
     model=Cloths
     context_object_name="cloth"
 
+class ClothVarientUpdateView(UpdateView):
+    template_name="yousta/varient_edit.html"
+    model=ClothVarients
+    form_class=ClothVarientForm
+    success_url=reverse_lazy("cloth-list")
+    
+    def form_valid(self, form):
+        messages.success(self.request,"cloth varient updated...")
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request,"cloth varient updating failed...")
+        return super().form_invalid(form)
+    
+def remove_varient(request,*args,**kwargs):
+    id=kwargs.get("pk")
+    ClothVarients.objects.filter(id=id).delete()
+    messages.success(request,"item removed...")
+    return redirect("cloth-list")
+
+class ClothOfferView(CreateView):
+    template_name="yousta/cloth_offer.html"
+    model=Offers
+    form_class=ClothOfferForm
+    success_url=reverse_lazy("cloth-list")
+
+    def form_valid(self, form):
+        id=self.kwargs.get("pk")
+        obj=ClothVarients.objects.get(id=id)
+        form.instance.clothvarient=obj
+        
+        messages.success(self.request,"offer has been added...")
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request," offer close...")
+        return super().form_invalid(form)

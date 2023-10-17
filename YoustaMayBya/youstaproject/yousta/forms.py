@@ -1,5 +1,5 @@
 from django import forms
-from yousta.models import User,Category,Cloths,ClothVarients
+from yousta.models import User,Category,Cloths,ClothVarients,Offers
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -28,3 +28,13 @@ class ClothVarientForm(forms.ModelForm):
     class Meta:
         model=ClothVarients
         exclude=("cloth",)
+
+
+class ClothOfferForm(forms.ModelForm):
+    class Meta:
+        model=Offers
+        exclude=("clothvarient",)
+        widgets={
+            "start_date":forms.DateInput(attrs={"type":"date"}),
+            "due_date":forms.DateInput(attrs={"type":"date"})
+        }
