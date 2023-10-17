@@ -1,5 +1,5 @@
 from django import forms
-from yousta.models import User,Category,Cloths
+from yousta.models import User,Category,Cloths,ClothVarients
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -24,4 +24,7 @@ class ClothAddForm(forms.ModelForm):
         model= Cloths
         fields="__all__"
 
-
+class ClothVarientForm(forms.ModelForm):
+    class Meta:
+        model=ClothVarients
+        exclude=("cloth",)
