@@ -43,7 +43,7 @@
                         <td>
                             <a href="{%url 'update-varient' v.id%}" class="btn btn-outline-info">Edit</a>
                             <a href="{%url 'remove-varient' v.id%}" class="btn btn-outline-danger">Remove</a>
-                            <a href="{%url 'offer-varient' v.id%}" class="btn btn-outline-success">offer</a>
+                            <a href="{%url 'offer-varient' v.id%}" class="btn btn-outline-warning">offer</a>
                         </td>
                     </tr>
     
@@ -51,6 +51,27 @@
                 </table>
     
             </div>
+        </div>
+        <div class="row">
+            {%for v in cloth.clothvarients_set.all%}
+
+                {%for o in v.offers_set.all%}
+                  <div class="border p-3 mt-3 shadow">
+
+                    <div>
+                        size: {{o.clothvarient.size}} | price: {{o.clothvarient.price}} | color: {{o.clothvarient.color}} 
+                    </div>
+
+                    <div class="text-info">price : {{o.price}}</div>
+                    <div class="text-success">start_date : {{o.start_date}}</div>
+                    <div class="text-danger">due_date : {{o.due_date}}</div>
+
+                    <a href="{%url 'offer-delete' o.id%}">delete</a>
+
+                  </div>
+                {%endfor%}
+
+            {%endfor%}
         </div>
     </div>
     

@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.views.generic import CreateView,FormView,ListView,UpdateView,DetailView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 
@@ -135,7 +135,7 @@ class ClothVarientUpdateView(UpdateView):
     template_name="yousta/varient_edit.html"
     model=ClothVarients
     form_class=ClothVarientForm
-    success_url=reverse_lazy("cloth-list")
+    # success_url=reverse_lazy("cloth-list")
     
     def form_valid(self, form):
         messages.success(self.request,"cloth varient updated...")
@@ -144,6 +144,14 @@ class ClothVarientUpdateView(UpdateView):
     def form_invalid(self, form):
         messages.error(self.request,"cloth varient updating failed...")
         return super().form_invalid(form)
+    
+    def get_success_url(self):
+        id=self.kwargs.get("pk")
+        cloth_varient_object=ClothVarients.objects.get(id=id)
+        cloth_id=cloth_varient_object.cloth.id
+
+        return reverse("cloth-detail",kwargs={"pk":cloth_id})
+
     
 def remove_varient(request,*args,**kwargs):
     id=kwargs.get("pk")
@@ -161,10 +169,28 @@ class ClothOfferView(CreateView):
         id=self.kwargs.get("pk")
         obj=ClothVarients.objects.get(id=id)
         form.instance.clothvarient=obj
-        
+
         messages.success(self.request,"offer has been added...")
         return super().form_valid(form)
     
     def form_invalid(self, form):
         messages.error(self.request," offer close...")
         return super().form_invalid(form)
+    
+    def get_success_url(self):
+        id=self.kwargs.get("pk")
+        cloth_varient_object= ClothVarients.objects.get(id=id)
+        cloth_id=cloth_varient_object.cloth.id
+
+        return reverse("cloth-detail",kwargs={"pk":cloth_id})
+    
+def remove_offer(request,*args,**kwargs):
+    id=kwargs.get("pk")
+    offer_obj=Offers.objects.get(id=id)
+    cloth_id=offer_obj.clothvarient.cloth.id
+    offer_obj.delete()
+    return redirect("cloth-detail",pk=cloth_id)
+
+def signout_view(request,*args,**kwargs):
+    logout(request)
+    return redirect("signin")
